@@ -30,20 +30,8 @@
 #   cat logs/g12_JOBID.out       # Read stdout
 # ============================================================
 
-set -e
-
-# Check for required selected model
-if [ "$#" -lt 1 ]; then
-    echo "Usage: $0 <your_selected_model>"
-    exit 1
-fi
-
-# Get the requested model
-SELECTED_MODEL=$1
-
-echo "============================================"
-echo "You are executing run_model.slurm for model: ${SELECTED_MODEL}"
-echo "============================================"
+# Get the config file
+CONFIG_FILE=$1
 
 # ---- SLURM Directives ----
 #SBATCH --job-name=g12_fmnist
@@ -57,24 +45,13 @@ echo "============================================"
 #SBATCH --error=logs/g12_%j.err
 #SBATCH --export=NONE
 
-# ---- Step 1: Request an interactive GPU session to install packages ----
-echo "[1/3] Requesting an interactive GPU session..."
-ijob -J setup -A shakeri_ds6050 -p gpu --gres=gpu:1 -t 01:00:00 --mem=8G -v
-
-# ---- Step 2: Load Miniforge ----
-echo "[2/3] Loading Miniforge..."
+# ---- Step 1: Load Miniforge ----
+echo "[1/1] Loading Miniforge..."
 module purge
 module load miniforge/24.11.3-py3.12
 
 echo "  Python: $(which python)"
 echo "  Version: $(python --version)"
-
-# ---- Step 3: Install PyTorch ----
-echo ""
-echo "[3/3] Installing PyTorch with CUDA 13.0..."
-echo "  (This matches Rivanna's NVIDIA driver 580.95.05)"
-pip install torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https://download.pytorch.org/whl/cu130
-pip install pyyaml scikit-learn xgboost thop
 
 # ---- Verify GPU ----
 echo "============================================"
@@ -90,12 +67,8 @@ echo "GPU:           $(python -c 'import torch; print(torch.cuda.get_device_name
 echo "CUDA version:  $(python -c 'import torch; print(torch.version.cuda)')"
 echo "============================================"
 
-# ---- Read Config ----
-CONFIG_FILE=${1:-configs/${SELECTED_MODEL}.yaml}
-echo "Config:        $CONFIG_FILE"
-
 # ---- Run Experiment ----
-python scripts/train_models.py --config "$CONFIG_FILE"
+python ~/development/DS6050_G12_PROJECT/scripts/train_models.py --config "$CONFIG_FILE"
 
 EXIT_CODE=$?
 echo "============================================"

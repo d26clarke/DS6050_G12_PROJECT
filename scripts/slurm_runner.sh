@@ -65,21 +65,21 @@ pip install torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 --index-url https
 pip install pyyaml scikit-learn xgboost thop
 
 # ---- Verify GPU ----
-echo "============================================"
-echo "Job ID:        $SLURM_JOB_ID"
-echo "Node:          $SLURM_NODELIST"
-echo "Partition:     $SLURM_JOB_PARTITION"
-echo "Start time:    $(date)"
-echo "--------------------------------------------"
-echo "Python:        $(which python)"
-echo "PyTorch:       $(python -c 'import torch; print(torch.__version__)')"
-echo "CUDA avail:    $(python -c 'import torch; print(torch.cuda.is_available())')"
-echo "GPU:           $(python -c 'import torch; print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "NONE")')"
-echo "CUDA version:  $(python -c 'import torch; print(torch.version.cuda)')"
-echo "============================================"
+#echo "============================================"
+#echo "Job ID:        $SLURM_JOB_ID"
+#echo "Node:          $SLURM_NODELIST"
+#echo "Partition:     $SLURM_JOB_PARTITION"
+#echo "Start time:    $(date)"
+#echo "--------------------------------------------"
+#echo "Python:        $(which python)"
+#echo "PyTorch:       $(python -c 'import torch; print(torch.__version__)')"
+#echo "CUDA avail:    $(python -c 'import torch; print(torch.cuda.is_available())')"
+#echo "GPU:           $(python -c 'import torch; print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "NONE")')"
+#echo "CUDA version:  $(python -c 'import torch; print(torch.version.cuda)')"
+#echo "============================================"
 
 # ---- Read Config ----
-CONFIG_FILE=${1:-configs/${SELECTED_MODEL}.yaml}
+CONFIG_FILE=~/development/DS6050_G12_PROJECT/configs/${SELECTED_MODEL}.yaml
 echo "Config:        $CONFIG_FILE"
 
 # ---- Run SLURM ----
